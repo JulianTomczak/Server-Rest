@@ -17,7 +17,7 @@ class DenunciaConnection():
     def read_all(self):
         with self.conn.cursor() as cur:
             cur.execute("""
-            SELECT * FROM "denuncia"
+            SELECT * FROM "denuncia" WHERE resuelta=false
             """)
             return cur.fetchall()
         
@@ -41,6 +41,13 @@ class DenunciaConnection():
             cur.execute("""
             UPDATE "denuncia" SET motivo=%(motivo)s, id_recipe=%(id_recipe)s, resuelta=%(resuelta)s WHERE id=%(id)s
             """, data)
+        self.conn.commit()
+
+    def resuelta(self, id):
+        with self.conn.cursor() as cur:
+            cur.execute("""
+            UPDATE "denuncia" SET resuelta=true WHERE id=%s
+            """, (id,))
         self.conn.commit()
 
     def delete(self,id):

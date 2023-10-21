@@ -27,6 +27,13 @@ class ModeradorConnection():
             SELECT * FROM "moderador" WHERE id = %s
             """, (id,))
             return cur.fetchone()
+        
+    def get_one(self, username):
+        with self.conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM "moderador" WHERE username = %s
+            """, (username,))
+            return cur.fetchone()
 
     def write(self, data):
         with self.conn.cursor() as cur:

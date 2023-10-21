@@ -1,0 +1,48 @@
+{% extends "components/layout.html" %}
+
+{% block title %}Denuncias{% endblock %}
+
+{% block content %}
+  <div class="row m-sm-5 m-3">
+    <h1 class="col">Denuncias</h1>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Motivo</th>
+            <th>ID de Receta</th>
+            <th>Resuelta</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td><mark>{{ item.id }}</mark></td>
+              <td><mark>{{ item.motivo }}</mark></td>
+              <td><mark>{{ item.id_recipe }}</mark></td>
+              <td><mark>{{ item.resuelta }}</mark></td>
+              <td>
+                <form method="post" action="/marcar_resuelta">
+                  <input type="hidden" name="denuncia_id" value="{{ item.id }}">
+                  <button type="submit" class="btn btn-success">Ignorar denuncia</button>
+                </form>
+              </td>
+              <td>
+                <form method="post" action="/eliminar_receta">
+                  <input type="hidden" name="receta_id" value="{{ item.id_recipe }}">
+                  <input type="hidden" name="denuncia_id" value="{{ item.id }}">
+                  <button type="submit" class="btn btn-danger">Eliminar Receta</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

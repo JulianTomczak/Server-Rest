@@ -1,17 +1,36 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request, Response, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
 from model.moderador_connection import ModeradorConnection
 from model.denuncia_connection import DenunciaConnection
+from model.recipes_connection import RecipesConnection
 from schema.moderador_schema import ModeradorSchema
 from schema.denuncia_schema import DenunciaSchema
+from fastapi.templating import Jinja2Templates
+
 
 app = FastAPI()
 conn = ModeradorConnection()
 conn2 = DenunciaConnection()
+conn3 = RecipesConnection()
+template = Jinja2Templates(directory="./view")
 
-"""Denuncias"""
+"""Inicio"""
 
 @app.get("/")
-def root():
+def root(req: Request):
+    return template.TemplateResponse("index.html", {"request": req})
+
+@app.post("/", response_class=HTMLResponse)
+def root(req: Request):
+  return template.TemplateResponse("index.html", {"request": req})
+
+@app.post("/api/denuncias", response_class=HTMLResponse)
+def denuncias(req: Request,  username: str = Form(), password: str = Form()):
+    user = conn.get_one(username)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Usuario no autorizado")
+    if user[5]!=password:
+        raise HTTPException(status_code=401, detail="Contraseña invalida")
     items =[]
     for data in conn2.read_all():
         dictionary ={}
@@ -20,7 +39,16 @@ def root():
         dictionary["id_recipe"]= data[2]
         dictionary["resuelta"]= data[3]
         items.append(dictionary)
-    return items
+    return template.TemplateResponse("denuncias.html", {"request": req, "items": items})
+
+@app.post("/marcar_resuelta")
+def marcar_resuelta(request: Request, denuncia_id: str = Form()):
+    conn2.resuelta(denuncia_id)
+
+@app.post("/eliminar_receta")
+def eliminar(request: Request, receta_id: str = Form(), denuncia_id: str = Form()):
+    conn2.resuelta(denuncia_id)
+    conn3.delete(receta_id)
 
 """Moderadores"""
 
@@ -42,6 +70,18 @@ def index():
 def get_one(id:str):
     dictionary ={}
     data= conn.read_one(id)
+    dictionary["id"]= data[0]
+    dictionary["name"]= data[1]
+    dictionary["last_name"]= data[2]
+    dictionary["email"]= data[3]
+    dictionary["username"]= data[4]
+    dictionary["password"]= data[5]
+    return dictionary
+
+@app.get("/api/moderadores/{username}")
+def get_one(username:str):
+    dictionary ={}
+    data= conn.get_one(username)
     dictionary["id"]= data[0]
     dictionary["name"]= data[1]
     dictionary["last_name"]= data[2]
