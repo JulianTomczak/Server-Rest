@@ -50,6 +50,19 @@ def eliminar(request: Request, receta_id: str = Form(), denuncia_id: str = Form(
     conn2.resuelta(denuncia_id)
     conn3.delete(receta_id)
 
+@app.post("/data-processing")
+def data_processing(motivo: str = Form(), id_recipe: str = Form()):
+  data = {
+    "motivo": motivo,
+    "id_recipe": id_recipe,
+    "resuelta": False,
+  }
+  conn2.write(data)
+
+@app.get("/api/denuncia/nueva", response_class=HTMLResponse)
+def denuncia_nueva(req: Request):
+    return template.TemplateResponse("crear_denuncia.html", {"request": req})
+
 """Moderadores"""
 
 @app.get("/api/moderador")

@@ -1,0 +1,23 @@
+{% extends "components/layout.html" %} 
+
+{% block title %}Sign up{% endblock %} 
+{% block content %}
+  <div class="row m-md-5 m-3">
+    <h1 class="col">Formulario Denuncia</h1>
+  </div>
+
+  <form method="post" action="/data-processing" class="row g-3 mx-sm-5 mx-2">
+    <div class="col-md-3">
+        <label for="validationDefault04" class="form-label">Motivo</label>
+        <select name="motivo" class="form-select" id="validationDefault04" required>
+          <option selected disabled value="">Choose...</option>
+          <option value="Contenido inapropiado">Contenido inapropiado</option>
+          <option value="Ingredientes prohibidos,">Ingredientes prohibidos</option>
+          <option value="Peligroso para la salud">Peligroso para la salud</option>
+        </select>
+    <input type="hidden" name="id_recipe" value="{{ id_recipe }}">
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Denunciar</button>
+    </div>
+  </form>
+{% endblock %}
