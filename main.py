@@ -12,7 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Configurar el middleware CORS para permitir solicitudes desde el origen de tu aplicación React.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
