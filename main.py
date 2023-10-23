@@ -225,3 +225,14 @@ def get_users(username : str):
         json_data = {"id" : row[0] , "username" : row[1]}
         allUsers.append(json_data)
     return allUsers
+
+"""Motivo"""
+@app.get("/api/motivos")
+def get_motivos():
+    allMotivos = []
+    query = "SELECT m.id , m.nombre FROM motivo as m"
+    cursor.execute(query)
+    for row in cursor.fetchall():
+        json_data = {"id" : row[0] , "nombre" : row[1]}
+        allMotivos.append(json_data)
+    return allMotivos
